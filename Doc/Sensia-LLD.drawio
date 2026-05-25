@@ -1,0 +1,375 @@
+<mxfile host="app.diagrams.net" agent="Cursor" pages="2">
+  <diagram id="sensia-lld-modules" name="LLD - Modules &amp; Dependencies">
+    <mxGraphModel dx="1407" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lld-t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;align=center;" value="Sensia POC — Low Level Design (LLD) · Module Map" vertex="1">
+          <mxGeometry height="30" width="500" x="380" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-fe" parent="1" style="swimlane;startSize=24;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" value="Frontend — sensia_ui-main/src" vertex="1">
+          <mxGeometry height="390" width="420" x="40" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-index" parent="pkg-fe" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontFamily=Courier New;fontSize=11;" value="routes/index.tsx — TherapistApp&lt;br&gt;· state: sessions[], activeId, lastReply, playing, ttsLoading&lt;br&gt;· refs: ttsAudioRef, ttsGenerationRef, ttsLoadingRef&lt;br&gt;· send(), startRecording(), onAudioFile(), toggleTtsPlayback()&lt;br&gt;· notifyGuardrail(GuardrailMeta) — crisis toast vs block" vertex="1">
+          <mxGeometry height="120" width="390" x="15" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-api" parent="pkg-fe" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontFamily=Courier New;fontSize=11;" value="lib/api.ts&lt;br&gt;GuardrailMeta { guardrail_triggered?, guardrail_category? }&lt;br&gt;fetchHealth · createSession · fetchTurns · sendChat&lt;br&gt;sendMicAudio · analyzeAudioFile · fetchTtsUrl · clearSession&lt;br&gt;turnsToMessages()" vertex="1">
+          <mxGeometry height="110" width="390" x="15" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-vite" parent="pkg-fe" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;align=left;spacingLeft=8;fontSize=10;" value="vite.config.ts — proxy /api → VITE_API_PROXY_TARGET (default :8000)" vertex="1">
+          <mxGeometry height="35" width="390" x="15" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-ls" parent="pkg-fe" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;dashed=1;align=left;spacingLeft=8;fontSize=10;" value="localStorage keys: sensia.sessions.v1, sensia.activeSession.v1" vertex="1">
+          <mxGeometry height="30" width="390" x="15" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-api" parent="1" style="swimlane;startSize=24;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" value="API — api_server.py" vertex="1">
+          <mxGeometry height="380" width="400" x="480" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-models" parent="pkg-api" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontFamily=Courier New;fontSize=10;" value="Pydantic: ChatRequest, ChatResponse (+ guardrail_triggered, guardrail_category),&lt;br&gt;MicChatResponse, AudioAnalyzeResponse, SessionResponse, TurnsResponse" vertex="1">
+          <mxGeometry height="95" width="370" x="15" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="api-endpoints" parent="pkg-api" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;align=center;" value="" vertex="1">
+          <mxGeometry height="182" width="370" x="15" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="api-h0" parent="api-endpoints" style="swimlane;fillColor=#e1d5e7;startSize=0;" value="" vertex="1">
+          <mxGeometry height="26" width="370" y="24" as="geometry" />
+        </mxCell>
+        <mxCell id="api-h0c1" parent="api-h0" style="text;html=1;fontStyle=1;align=center;" value="Method / Path" vertex="1">
+          <mxGeometry height="26" width="200" as="geometry">
+            <mxRectangle height="26" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-h0c2" parent="api-h0" style="text;html=1;fontStyle=1;align=center;" value="Handler → core" vertex="1">
+          <mxGeometry height="26" width="170" x="200" as="geometry">
+            <mxRectangle height="26" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r1" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r1c1" parent="api-r1" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="GET /api/health" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r1c2" parent="api-r1" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="redis_status()" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r2" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r2c1" parent="api-r2" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="POST /api/sessions" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r2c2" parent="api-r2" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="create_session_id()" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r3" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r3c1" parent="api-r3" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="POST .../chat" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r3c2" parent="api-r3" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="chat_text()" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r4" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r4c1" parent="api-r4" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="POST .../mic (multipart)" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r4c2" parent="api-r4" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="chat_from_mic() + SHA256 dedupe" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r5" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="138" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r5c1" parent="api-r5" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="POST .../audio/analyze" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r5c2" parent="api-r5" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="analyze_audio_upload()" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r6" parent="api-endpoints" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="22" width="370" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="api-r6c1" parent="api-r6" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="POST .../tts" vertex="1">
+          <mxGeometry height="22" width="200" as="geometry">
+            <mxRectangle height="22" width="200" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="api-r6c2" parent="api-r6" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="text_to_speech_sync() → audio/mpeg" vertex="1">
+          <mxGeometry height="22" width="170" x="200" as="geometry">
+            <mxRectangle height="22" width="170" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pkg-core" parent="1" style="swimlane;startSize=24;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Domain — therapist_core.py" vertex="1">
+          <mxGeometry height="380" width="460" x="900" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="core-ask" parent="pkg-core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontStyle=1;align=center;" value="ask_question(user, psychological_report, session_id)" vertex="1">
+          <mxGeometry height="35" width="300" x="80" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="core-steps" parent="pkg-core" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" value="0. evaluate_user_message() — if block → AskOutcome(canned, no RAG/LLM)&lt;br&gt;1. get_vectordb() → retriever k=3 (allow only)&lt;br&gt;2. get_session_summary(session_id)&lt;br&gt;3. build_formatted_history + GUARDRAIL_SCOPE_RULES in prompt&lt;br&gt;4. custom_prompt + Groq LLM invoke&lt;br&gt;5. append_turn → maybe_refresh_session_summary (skip off_topic blocks)" vertex="1">
+          <mxGeometry height="95" width="420" x="20" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="core-outcome" parent="pkg-core" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;fontSize=10;" value="@dataclass AskOutcome&lt;br&gt;reply, guardrail_triggered, guardrail_category" vertex="1">
+          <mxGeometry height="45" width="200" x="20" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="core-funcs" parent="pkg-core" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;align=left;spacingLeft=6;fontFamily=Courier New;fontSize=10;" value="chat_text · chat_from_mic · analyze_audio_upload&lt;br&gt;transcribe_audio_file · text_to_speech_bytes/sync&lt;br&gt;merge_summarize_turn_batch · clear_session_data&lt;br&gt;_processed_mic_sigs · _processed_audio_sigs (in-proc)" vertex="1">
+          <mxGeometry height="140" width="210" x="230" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-guard" parent="1" style="swimlane;startSize=24;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" value="Guardrails — sensia_guardrails.py" vertex="1">
+          <mxGeometry height="170" width="500" x="40" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="guard-funcs" parent="pkg-guard" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontFamily=Courier New;fontSize=10;" value="guardrails_enabled() ← SENSIA_GUARDRAILS_ENABLED (default on)&lt;br&gt;evaluate_user_message(text) → GuardrailResult&lt;br&gt;Priority: crisis → harmful → off_topic → allow&lt;br&gt;_load_policy() ← guardrails_policy.json" vertex="1">
+          <mxGeometry height="55" width="470" x="15" y="37.5" as="geometry" />
+        </mxCell>
+        <mxCell id="guard-result" parent="pkg-guard" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontSize=10;" value="GuardrailResult: action allow|block, category, reply&lt;br&gt;Categories: in_scope · off_topic · crisis · harmful&lt;br&gt;Crisis helplines: SENSIA_CRISIS_REGION IN | US | UK" vertex="1">
+          <mxGeometry height="45" width="470" x="15" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-store" parent="1" style="swimlane;startSize=24;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="Persistence — conversation_store.py" vertex="1">
+          <mxGeometry height="230" width="500" x="40" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="store-funcs" parent="pkg-store" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=left;spacingLeft=8;fontFamily=Courier New;fontSize=10;" value="append_turn(session_id, user, bot)&lt;br&gt;get_recent_turns · get_turn_count · get_turns_slice&lt;br&gt;get_session_summary · set_session_summary · clear_session&lt;br&gt;is_redis_active() · _redis_url() from .env" vertex="1">
+          <mxGeometry height="70" width="470" x="15" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="store-keys" parent="pkg-store" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fontStyle=1;" value="" vertex="1">
+          <mxGeometry height="75" width="470" x="15" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-h" parent="store-keys" style="swimlane;fillColor=#e1d5e7;startSize=0;" value="" vertex="1">
+          <mxGeometry height="24" width="470" y="24" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-h1" parent="sk-h" style="text;html=1;fontStyle=1;align=center;" value="Redis key" vertex="1">
+          <mxGeometry height="24" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-h2" parent="sk-h" style="text;html=1;fontStyle=1;align=center;" value="Value shape" vertex="1">
+          <mxGeometry height="24" width="270" x="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r1" parent="store-keys" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="24" width="470" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r1a" parent="sk-r1" style="text;html=1;align=left;spacingLeft=4;fontSize=10;fontFamily=Courier New;" value="sensia:chat:{session_id}" vertex="1">
+          <mxGeometry height="24" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r1b" parent="sk-r1" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="Redis LIST of JSON {user, bot}" vertex="1">
+          <mxGeometry height="24" width="270" x="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r2" parent="store-keys" style="swimlane;fillColor=#ffffff;startSize=0;" value="" vertex="1">
+          <mxGeometry height="24" width="470" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r2a" parent="sk-r2" style="text;html=1;align=left;spacingLeft=4;fontSize=10;fontFamily=Courier New;" value="sensia:summary:{session_id}" vertex="1">
+          <mxGeometry height="24" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sk-r2b" parent="sk-r2" style="text;html=1;align=left;spacingLeft=4;fontSize=10;" value="JSON { text: string, cursor: int }" vertex="1">
+          <mxGeometry height="24" width="270" x="200" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg-libs" parent="1" style="swimlane;startSize=24;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="Supporting modules" vertex="1">
+          <mxGeometry height="290" width="800" x="560" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="lib-policy" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;fontSize=11;" value="guardrails_policy.json&lt;br&gt;patterns · phrases · replies" vertex="1">
+          <mxGeometry height="40" width="160" x="20" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="lib1" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="chat_config.py — get_chat_llm() Groq" vertex="1">
+          <mxGeometry height="45" width="180" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lib2" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="embeddings_config.py — HuggingFace mpnet" vertex="1">
+          <mxGeometry height="45" width="180" x="220" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lib3" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="Audio_Analysis.py — extract_audio_features, analyze_with_openai" vertex="1">
+          <mxGeometry height="45" width="200" x="420" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lib4" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="create_db.py — ingest docs into Chroma" vertex="1">
+          <mxGeometry height="45" width="140" x="640" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lib5" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;dashed=1;align=center;fontSize=10;" value="AI_Therapist.py — deprecated (points to API+UI)" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lib6" parent="pkg-libs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;dashed=1;align=center;fontSize=10;" value="sensia_bootstrap.py — UTF-8 / HF quiet mode" vertex="1">
+          <mxGeometry height="40" width="200" x="240" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-fe-api" edge="1" parent="1" source="fe-api" style="endArrow=open;dashed=1;html=1;strokeColor=#6c8ebf;" target="api-endpoints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-api-core" edge="1" parent="1" source="api-endpoints" style="endArrow=open;html=1;strokeColor=#9673a6;" target="core-ask">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-core-store" edge="1" parent="1" source="core-ask" style="endArrow=open;html=1;" target="store-funcs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-core-lib3" edge="1" parent="1" source="core-funcs" style="endArrow=open;dashed=1;html=1;" target="lib3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-core-lib2" edge="1" parent="1" source="core-ask" style="endArrow=open;dashed=1;html=1;" target="lib2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-core-guard" edge="1" parent="1" source="core-ask" style="endArrow=open;html=1;strokeColor=#b85450;" target="guard-funcs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-guard-policy" edge="1" parent="1" source="guard-funcs" style="endArrow=open;dashed=1;html=1;strokeColor=#b85450;" target="lib-policy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="sensia-lld-sequences" name="LLD - Sequences &amp; Data">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lld-t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;align=center;" value="Sensia POC — LLD · Sequences &amp; Data Models" vertex="1">
+          <mxGeometry x="350" y="15" width="550" height="30" as="geometry" />
+        </mxCell>
+        <!-- Sequence: ask_question -->
+        <mxCell id="seq-box" parent="1" style="swimlane;startSize=28;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Sequence: ask_question (all chat paths converge here)" vertex="1">
+          <mxGeometry x="40" y="55" width="1320" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-ui" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="React UI" vertex="1">
+          <mxGeometry x="40" y="50" width="100" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-api" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;" value="FastAPI" vertex="1">
+          <mxGeometry x="200" y="50" width="100" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-core" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;" value="therapist_core" vertex="1">
+          <mxGeometry x="360" y="50" width="110" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-guard" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;fillColor=#f8cecc;" value="guardrails" vertex="1">
+          <mxGeometry x="520" y="50" width="90" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-rag" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;" value="Chroma RAG" vertex="1">
+          <mxGeometry x="650" y="50" width="90" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-redis" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;" value="Redis/Mem" vertex="1">
+          <mxGeometry x="780" y="50" width="90" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="lif-groq" parent="seq-box" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;" value="Groq" vertex="1">
+          <mxGeometry x="910" y="50" width="80" height="250" as="geometry" />
+        </mxCell>
+        <!-- Simplified sequence as labeled steps (lifelines without full UML messages - cleaner in drawio) -->
+        <mxCell id="seq-note" parent="seq-box" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;fontSize=10;" value="&lt;b&gt;Paths&lt;/b&gt;: /chat · /mic · /audio/analyze → ask_question()&lt;br&gt;&lt;br&gt;&lt;b&gt;Step 0 — guardrails&lt;/b&gt; (always):&lt;br&gt;evaluate_user_message(user) → crisis | harmful | off_topic | allow&lt;br&gt;&lt;b&gt;Block&lt;/b&gt;: canned reply, append_turn only, skip summary + Groq main path&lt;br&gt;API: guardrail_triggered=true, guardrail_category; UI notifyGuardrail()&lt;br&gt;&lt;b&gt;Allow&lt;/b&gt;: ① RAG k=3 ② summary ③ history ④ LLM ⑤ append ⑥ summary if ≥5 turns&lt;br&gt;&lt;br&gt;&lt;b&gt;TTS&lt;/b&gt;: POST /tts (not run on guardrail block unless user plays refusal)" vertex="1">
+          <mxGeometry x="1020" y="50" width="280" height="260" as="geometry" />
+        </mxCell>
+        <!-- Data models -->
+        <mxCell id="dm-box" parent="1" style="swimlane;startSize=28;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" value="Data Models" vertex="1">
+          <mxGeometry x="40" y="390" width="640" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-session" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="Session (UI / localStorage)&lt;br&gt;—&lt;br&gt;id: string (UUID)&lt;br&gt;title: string&lt;br&gt;createdAt, updatedAt: number&lt;br&gt;messages: Msg[]&lt;br&gt;saved: boolean" vertex="1">
+          <mxGeometry x="30" y="45" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-msg" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="Msg (UI display)&lt;br&gt;—&lt;br&gt;id: number&lt;br&gt;role: &quot;user&quot; | &quot;ai&quot;&lt;br&gt;text: string&lt;br&gt;time: string" vertex="1">
+          <mxGeometry x="240" y="45" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-turn" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="Turn (API / Redis)&lt;br&gt;—&lt;br&gt;user: string&lt;br&gt;bot: string" vertex="1">
+          <mxGeometry x="430" y="45" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-summary" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="SessionSummary (Redis JSON)&lt;br&gt;—&lt;br&gt;text: string&lt;br&gt;cursor: int  // turns summarized so far" vertex="1">
+          <mxGeometry x="30" y="175" width="220" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-chat-req" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="ChatRequest&lt;br&gt;message: string (min 1)" vertex="1">
+          <mxGeometry x="280" y="175" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-mic-res" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#ffffff;fontSize=10;" value="MicChatResponse&lt;br&gt;+ guardrail_triggered, guardrail_category" vertex="1">
+          <mxGeometry x="460" y="130" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-guard" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="GuardrailResult&lt;br&gt;action: allow | block&lt;br&gt;category: in_scope | off_topic | crisis | harmful&lt;br&gt;reply: string (if block)" vertex="1">
+          <mxGeometry x="30" y="265" width="240" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-ask-out" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" value="AskOutcome&lt;br&gt;reply: string&lt;br&gt;guardrail_triggered: bool&lt;br&gt;guardrail_category: str | null" vertex="1">
+          <mxGeometry x="290" y="250" width="200" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="dm-guard-meta" parent="dm-box" style="shape=umlClass;whiteSpace=wrap;html=1;fillColor=#dae8fc;fontSize=10;" value="GuardrailMeta (TS)&lt;br&gt;guardrail_triggered?: boolean&lt;br&gt;guardrail_category?: string | null" vertex="1">
+          <mxGeometry x="510" y="200" width="120" height="70" as="geometry" />
+        </mxCell>
+        <!-- Summary algorithm -->
+        <mxCell id="alg-box" parent="1" style="swimlane;startSize=28;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" value="Algorithm: maybe_refresh_session_summary" vertex="1">
+          <mxGeometry x="700" y="390" width="660" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-start" parent="alg-box" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" value="Start" vertex="1">
+          <mxGeometry x="40" y="50" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-d1" parent="alg-box" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;" value="turn_count - cursor &amp;gt;= 5?" vertex="1">
+          <mxGeometry x="150" y="40" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-batch" parent="alg-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="get_turns_slice(cursor, 5)" vertex="1">
+          <mxGeometry x="340" y="50" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-merge" parent="alg-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="merge_summarize_turn_batch(prior_summary, batch)" vertex="1">
+          <mxGeometry x="530" y="50" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-set" parent="alg-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;" value="set_session_summary(text, cursor+5)" vertex="1">
+          <mxGeometry x="340" y="120" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-end" parent="alg-box" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;" value="End" vertex="1">
+          <mxGeometry x="40" y="130" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="alg-env" parent="alg-box" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" value="Env (conversation_store): REDIS_* · REDIS_DISABLED=1&lt;br&gt;Env (guardrails): SENSIA_GUARDRAILS_ENABLED (default 1) · SENSIA_CRISIS_REGION IN|US|UK&lt;br&gt;Skip summary refresh when guardrail_category == off_topic" vertex="1">
+          <mxGeometry x="30" y="190" width="600" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="ae1" edge="1" parent="alg-box" source="alg-start" target="alg-d1" style="endArrow=classic;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae2" edge="1" parent="alg-box" source="alg-d1" target="alg-batch" style="endArrow=classic;html=1;" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae3" edge="1" parent="alg-box" source="alg-batch" target="alg-merge" style="endArrow=classic;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae4" edge="1" parent="alg-box" source="alg-merge" target="alg-set" style="endArrow=classic;html=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae5" edge="1" parent="alg-box" source="alg-set" target="alg-d1" style="endArrow=classic;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="200" />
+              <mxPoint x="220" y="200" />
+              <mxPoint x="220" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae6" edge="1" parent="alg-box" source="alg-d1" target="alg-end" style="endArrow=classic;html=1;" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Error handling -->
+        <mxCell id="err-box" parent="1" style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="Cross-cutting (POC)" vertex="1">
+          <mxGeometry x="40" y="770" width="1320" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="err1" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="CORS: localhost:8080, 5173, 3000" vertex="1">
+          <mxGeometry x="30" y="40" width="200" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="err2" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="Dedupe: SHA256 per session (mic + upload)" vertex="1">
+          <mxGeometry x="250" y="40" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="err3" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="TTS: ttsGenerationRef + single audio element" vertex="1">
+          <mxGeometry x="490" y="40" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="err4" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="Windows: sensia_bootstrap UTF-8" vertex="1">
+          <mxGeometry x="730" y="40" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="err5" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;fontSize=11;" value="HTTP 500: _safe_error_message()" vertex="1">
+          <mxGeometry x="930" y="40" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="err6" parent="err-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;align=center;fontSize=11;" value="Guardrails: regex policy · no Groq on block" vertex="1">
+          <mxGeometry x="1130" y="40" width="170" height="45" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

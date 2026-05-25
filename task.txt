@@ -1,0 +1,2 @@
+Integrate Redis as a context database to persist conversation history and retain previous knowledge across interactions.
+Add chat functionality to the application. Currently, it only supports audio file uploads; it should also provide a text-based chat interface for interactive conversations.

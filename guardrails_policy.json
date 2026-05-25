@@ -1,0 +1,74 @@
+{
+  "replies": {
+    "off_topic": "I'm not able to help with that. I'm here only for emotional support and conversation in this session.",
+    "harmful": "I can't assist with that request. This space is for emotional support and safe conversation only."
+  },
+  "crisis_regions": {
+    "IN": "I'm really glad you reached out. If you are in crisis or thinking about harming yourself, please contact emergency services or a crisis line right away: Tele-MANAS 14416 (24/7), iCall +91-9152987821, Vandrevala Foundation 1860-2662-345 / 1800-233-3330. You deserve support from a trained human right now.",
+    "US": "I'm really glad you reached out. If you are in crisis or thinking about harming yourself, please call or text 988 (Suicide & Crisis Lifeline) or call 911 if you are in immediate danger. You deserve support from a trained human right now.",
+    "UK": "I'm really glad you reached out. If you are in crisis or thinking about harming yourself, please call 999 if you are in immediate danger, or contact Samaritans at 116 123 (free, 24/7). You deserve support from a trained human right now."
+  },
+  "emotional_override_patterns": [
+    "\\bi feel\\b",
+    "\\bi'm feeling\\b",
+    "\\bi am feeling\\b",
+    "\\bi felt\\b",
+    "\\bi'm worried\\b",
+    "\\bi am worried\\b",
+    "\\bi worry\\b",
+    "\\bstressed about\\b",
+    "\\banxious about\\b",
+    "\\bdepressed about\\b",
+    "\\bupset about\\b",
+    "\\bscared about\\b",
+    "\\bstruggling with\\b"
+  ],
+  "crisis_patterns": [
+    "\\bkill myself\\b",
+    "\\bkill my self\\b",
+    "\\bwant to die\\b",
+    "\\bwanna die\\b",
+    "\\bend my life\\b",
+    "\\bend it all\\b",
+    "\\bsuicide\\b",
+    "\\bself[- ]?harm\\b",
+    "\\bhurt myself\\b",
+    "\\bgoing to die tonight\\b",
+    "\\bno reason to live\\b",
+    "\\bbetter off dead\\b",
+    "\\bcan't go on\\b",
+    "\\bcannot go on\\b"
+  ],
+  "harmful_patterns": [
+    "\\bhow to (make|build) a bomb\\b",
+    "\\bhow to poison\\b"
+  ],
+  "off_topic_patterns": [
+    "\\bprime minister\\b",
+    "\\bpresident of\\b",
+    "\\bwho is the president\\b",
+    "\\bwho is the prime minister\\b",
+    "\\b(parliament|election|electoral|vote for|political party)\\b",
+    "\\b(capital of|population of)\\s+[a-z]{3,}\\b",
+    "\\bstock price\\b",
+    "\\bcrypto price\\b",
+    "\\bweather in\\b",
+    "\\bwrite (me )?(code|python|javascript)\\b",
+    "\\bhomework answer\\b",
+    "\\btell me about (narendra|modi|trump|biden|putin)\\b",
+    "\\bnews about\\b",
+    "\\blatest news\\b",
+    "\\bwho won the (match|game|election)\\b",
+    "\\brecipe for\\b",
+    "\\btranslate .+ to\\b"
+  ],
+  "off_topic_phrases": [
+    "who is the prime minister",
+    "who is prime minister",
+    "who is the president",
+    "what is the capital of",
+    "explain quantum physics",
+    "write a poem about",
+    "give me python code"
+  ]
+}
