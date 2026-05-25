@@ -1,26 +1,28 @@
-# 🧠 AI Therapist - Voice-Based Mental Health Support System
+# Sensia — Voice & Text Therapy Companion (POC)
 
-A Streamlit-based AI therapist that analyzes audio input to provide empathetic, context-aware mental health support using speech analysis, LangChain RAG, **Groq** (LLM chat), **sentence-transformers** (embeddings / Chroma), and Edge TTS.
+Sensia is a mental-health support POC with a **React UI** (`sensia_ui-main`) and **FastAPI** backend (`api_server.py`). It combines speech analysis, Whisper transcription, RAG (Chroma + HuggingFace embeddings), **Groq** chat, optional **Redis** session memory, **input guardrails**, and Edge TTS.
 
-## 📋 Features
+> **Legacy:** `AI_Therapist.py` and Streamlit flows are deprecated. Use `run_backend.ps1` + `run_ui.ps1` for day-to-day development.
 
-- **Voice-based interaction**: Upload audio files (WAV/MP3) for analysis
-- **Speech feature extraction**: Analyzes pitch, tone, speech rate, pauses, and emotional indicators using Librosa
-- **Psychological assessment**: Generates clinical reports based on audio features and transcription (via Groq)
-- **RAG-powered responses**: Uses vector database to provide contextually relevant therapeutic responses
-- **Conversation logging**: Tracks all interactions for continuity
-- **Text-to-speech responses**: Returns audio responses using Edge TTS
-- **Text chat tab**: Same RAG + Groq pipeline as audio (no voice assessment for text-only turns)
-- **Redis (optional)**: Persists per-session conversation turns for context across refreshes; falls back to in-memory if Redis is down or unset
+## Features
 
-## ⚙️ Requirements
+- **Multi-modal input:** typed chat, microphone (MediaRecorder), or audio upload (WAV/MP3/M4A)
+- **Speech pipeline:** faster-whisper transcription; upload path adds librosa features + Groq clinical-style report (`Audio_Analysis.py`)
+- **RAG-grounded replies:** Chroma vector DB (`New_DB/`) with therapy context
+- **Session memory:** Redis turns + rolling 5-turn LLM summaries (in-memory fallback if Redis is down)
+- **Input guardrails:** off-topic refusal, crisis helplines (region-specific), harmful content — via `sensia_guardrails.py` + `guardrails_policy.json`
+- **TTS:** on-demand Edge TTS (`POST /api/.../tts`) with a single audio player in the UI (no overlapping playback)
+- **Optional logging:** `conversation_log.txt` (not required for the React UI path)
 
-- Python 3.11+
-- **Groq API key** (`GROQ_API_KEY` in `.env`) for chat completions
-- **Redis** (optional): `REDIS_URL` (e.g. `redis://localhost:6379/0`). If Redis is unavailable, the app still runs with in-memory history for the current process.
-- First run downloads the HuggingFace embedding model (`sentence-transformers/all-mpnet-base-v2`); internet required once
+## Requirements
 
-### Run Redis locally (Docker)
+- **Python 3.11+** with project venv (`venv/`)
+- **Node.js 20+** (for `sensia_ui-main`)
+- **Groq API key** in `.env` — see [`.env.example`](.env.example)
+- **Redis** (optional): `REDIS_URL` or `REDIS_HOST` / `REDIS_PORT` / etc. in `.env`
+- First run downloads the HuggingFace embedding model (`sentence-transformers/all-mpnet-base-v2`)
+
+### Redis locally (Docker)
 
 ```bash
 docker run -d --name sensia-redis -p 6379:6379 redis:7-alpine
@@ -28,88 +30,142 @@ docker run -d --name sensia-redis -p 6379:6379 redis:7-alpine
 
 Then set `REDIS_URL=redis://localhost:6379/0` in `.env`.
 
+## Quick start
 
-## 🚀 Setup Instructions
+### 1. Python dependencies
 
-### 1. Install Dependencies
-
+```powershell
+cd D:\Sensia
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-### 2. Set up Environment Variables
-
-Create a `.env` file in the project root:
-
-GROQ_API_KEY=your_groq_api_key_here
-
-Optional:
-
-GROQ_MODEL=llama-3.3-70b-versatile
-
-Redis (persistent chat context across browser refreshes for the same session ID):
-
-REDIS_URL=redis://localhost:6379/0
-
-Optional: `REDIS_CHAT_TTL` (seconds), `REDIS_KEY_PREFIX`, or `REDIS_DISABLED=1` to force in-memory store.
-
-**Guardrails** (off-topic refusal, crisis helplines — enabled by default):
-
-```env
-SENSIA_GUARDRAILS_ENABLED=1
-SENSIA_CRISIS_REGION=IN
 ```
 
-- `SENSIA_CRISIS_REGION`: `IN` (default), `US`, or `UK` — crisis reply helpline text
-- Tune keyword lists in [`guardrails_policy.json`](guardrails_policy.json) without code changes
-- Set `SENSIA_GUARDRAILS_ENABLED=0` to disable input guardrails (prompt rules still apply)
+### 2. Environment variables
 
-Run guardrail tests: `python -m pytest tests/test_guardrails.py -q`
+**Do not commit `.env` to git** — it is listed in [`.gitignore`](.gitignore).
 
-Architecture diagrams: [`Sensia-HLD.drawio`](Sensia-HLD.drawio), [`Sensia-LLD.drawio`](Sensia-LLD.drawio), [`Sensa flow diagam.drawio`](Sensa%20flow%20diagam.drawio) — input is checked by `sensia_guardrails.py` before `ask_question` in [`therapist_core.py`](therapist_core.py).
+```powershell
+Copy-Item .env.example .env
+# Edit .env and set GROQ_API_KEY (and Redis if used)
+```
 
+| Variable | Required | Notes |
+|----------|----------|--------|
+| `GROQ_API_KEY` | Yes | Groq chat completions |
+| `GROQ_MODEL` | No | Default `llama-3.3-70b-versatile` |
+| `REDIS_URL` / `REDIS_*` | No | Persistent sessions; memory fallback |
+| `SENSIA_GUARDRAILS_ENABLED` | No | Default `1` (on) |
+| `SENSIA_CRISIS_REGION` | No | `IN` (default), `US`, or `UK` |
 
-### 3. Create Vector Database
+Tune guardrail phrases in [`guardrails_policy.json`](guardrails_policy.json). Set `SENSIA_GUARDRAILS_ENABLED=0` to disable the input gate (prompt scope rules still apply).
 
-**Run this FIRST** before using the therapist:
+### 3. Vector database (first time only)
 
-streamlit run create_db.py
+Ingest training data into Chroma **before** chatting (still uses Streamlit UI for this step):
 
+```powershell
+.\venv\Scripts\streamlit run create_db.py
+```
 
-1. Upload your `data.jsonl` file (training data for therapeutic responses)
-2. Click "Create Chroma Vector DB"
-3. Wait for processing to complete
-4. The database will be saved to the `New_DB/` directory
+1. Upload `data.jsonl` (or your JSON/JSONL training file)
+2. Click **Create Chroma Vector DB**
+3. Output is saved under `New_DB/` (gitignored)
 
+### 4. Run the app (two terminals)
 
-## 💬 Usage
+**Terminal 1 — API** (http://127.0.0.1:8000):
 
-### Run the AI Therapist
+```powershell
+.\run_backend.ps1
+```
 
-streamlit run AI_Therapist.py
+**Terminal 2 — UI** (Vite dev server, typically http://localhost:5173):
 
-Use the **Audio** tab for voice uploads or the **Text chat** tab for typed messages. The sidebar shows the active **session ID** (paste a previous ID and click **Apply** to resume that Redis-backed thread). **Clear session history** removes turns for the current session from Redis (and optionally clears `conversation_log.txt` if checked).
+```powershell
+.\run_ui.ps1
+```
 
-### Test with Sample Audio Files
+Open the URL shown in the Vite terminal (not a `file://` preview). The UI proxies `/api` → `http://127.0.0.1:8000`.
 
-Upload audio files in sequence (e.g., `hello.wav`, `1.wav`, `2.wav`, `3.wav`, `4.wav`, `5.wav`):
+**Health check:** http://127.0.0.1:8000/api/health
 
-1. **Upload audio file** via the file uploader
-2. **Wait for analysis**: The system will:
-   - Transcribe your speech using Whisper
-   - Extract audio features (pitch, tone, pauses, etc.)
-   - Generate a psychological assessment report
-   - Retrieve relevant context from the vector DB
-   - Generate an empathetic response
-   - Convert response to speech
-3. **View results**: See transcription, response text, and listen to audio reply
-4. **Check conversation log** in the sidebar
+### Manual start (optional)
 
-### Review and Modify Responses
+```powershell
+.\venv\Scripts\python.exe -m uvicorn api_server:app --host 127.0.0.1 --port 8000 --reload
+cd sensia_ui-main
+npm install
+npm run dev
+```
 
-If you need to review or modify the therapeutic responses:
+## Using the React UI
 
-streamlit run review.py
+- **New session** — created automatically; session list stored in browser `localStorage`
+- **Chat** — type a message and send (`POST /api/sessions/{id}/chat`)
+- **Mic** — record a voice note (`POST .../mic`); Whisper → `ask_question`
+- **Upload** — full audio analysis path (`POST .../audio/analyze`)
+- **TTS** — play/pause assistant reply; one shared `<audio>` element
+- **Guardrails** — off-topic or crisis messages return a canned reply (no main LLM); UI may show a toast when `guardrail_triggered` is true
 
-Use this to:
-- Review past interactions
-- Modify responses if necessary
-- Update the conversation database
+Example off-topic test: *"Who is the prime minister?"* → short refusal, no factual answer.
+
+## API overview
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/api/health` | Redis / backend status |
+| POST | `/api/sessions` | New session ID |
+| GET | `/api/sessions/{id}/turns` | Conversation history |
+| POST | `/api/sessions/{id}/chat` | Text message |
+| POST | `/api/sessions/{id}/mic` | Voice note (multipart) |
+| POST | `/api/sessions/{id}/audio/analyze` | Upload + analysis |
+| POST | `/api/sessions/{id}/tts` | Edge TTS MP3 |
+| DELETE | `/api/sessions/{id}` | Clear session data |
+
+Chat/mic/analyze responses include optional `guardrail_triggered` and `guardrail_category`.
+
+## Tests
+
+```powershell
+.\venv\Scripts\python.exe -m pytest tests/test_guardrails.py -q
+```
+
+## Architecture diagrams
+
+Open in [diagrams.net](https://app.diagrams.net) or the Draw.io extension:
+
+- [`Sensia-HLD.drawio`](Sensia-HLD.drawio) — system context & containers
+- [`Sensia-LLD.drawio`](Sensia-LLD.drawio) — modules, API, sequences
+- [`Sensa flow diagam.drawio`](Sensa%20flow%20diagam.drawio) — end-to-end pipeline (including guardrails)
+
+Input is evaluated in `sensia_guardrails.evaluate_user_message()` before RAG/LLM inside `therapist_core.ask_question()`.
+
+## Git & secrets
+
+- Commit [`.env.example`](.env.example), not `.env`
+- Root [`.gitignore`](.gitignore) excludes `.env`, `venv/`, `New_DB/`, logs, and `node_modules/`
+- If `.env` was ever pushed, rotate API keys and run `git rm --cached .env`
+
+## Legacy / optional tools
+
+| Tool | Command | Notes |
+|------|---------|--------|
+| Vector DB builder | `streamlit run create_db.py` | One-time ingest |
+| Response review | `streamlit run review.py` | Past log / DB review |
+| Streamlit app | `AI_Therapist.py` | Prints migration notice only |
+
+## Project layout (main)
+
+```
+Sensia/
+├── api_server.py          # FastAPI entry
+├── therapist_core.py      # ask_question, chat, mic, audio, TTS
+├── sensia_guardrails.py   # Input guardrails
+├── conversation_store.py  # Redis / in-memory turns & summaries
+├── sensia_ui-main/        # React + Vite UI
+├── run_backend.ps1
+├── run_ui.ps1
+├── .env.example           # Template (safe to commit)
+└── tests/test_guardrails.py
+```
