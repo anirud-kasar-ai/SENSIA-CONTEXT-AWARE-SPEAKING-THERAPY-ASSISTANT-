@@ -1,0 +1,185 @@
+<mxfile host="app.diagrams.net" agent="Cursor" version="24.0.0">
+  <diagram id="sensia-workflow" name="Sensia Workflow — Input to Response">
+    <mxGraphModel dx="1100" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="720" pageHeight="2200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1" value="Sensia — Workflow: Input → Response" vertex="1">
+          <mxGeometry x="110" y="15" width="500" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#666666" value="High-level path for demos · React :5173 → FastAPI :8000" vertex="1">
+          <mxGeometry x="130" y="48" width="460" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- START -->
+        <mxCell id="start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="START&lt;br&gt;User opens app · session created" vertex="1">
+          <mxGeometry x="260" y="80" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- INPUT -->
+        <mxCell id="input-d" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center" value="USER INPUT&lt;br&gt;① Text  ② Mic  ③ Upload" vertex="1">
+          <mxGeometry x="270" y="160" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Three paths labels -->
+        <mxCell id="p-text" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;fontSize=11" value="① TEXT&lt;br&gt;Type in composer" vertex="1">
+          <mxGeometry x="40" y="280" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p-mic" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;fontSize=11" value="② MIC&lt;br&gt;Record voice note" vertex="1">
+          <mxGeometry x="295" y="280" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p-upload" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;fontSize=11" value="③ UPLOAD&lt;br&gt;.wav / .mp3 / .m4a" vertex="1">
+          <mxGeometry x="550" y="280" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center" value="React UI&lt;br&gt;sendChat · sendMicAudio · analyzeAudioFile" vertex="1">
+          <mxGeometry x="235" y="360" width="250" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="proxy" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#666666;align=center;fontSize=10" value="Vite proxy → FastAPI :8000" vertex="1">
+          <mxGeometry x="285" y="430" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;align=center" value="FastAPI&lt;br&gt;/chat  ·  /mic  ·  /audio/analyze" vertex="1">
+          <mxGeometry x="255" y="475" width="210" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Preprocess -->
+        <mxCell id="pre-d" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center;fontSize=11" value="Voice input?&lt;br&gt;(mic or upload)" vertex="1">
+          <mxGeometry x="280" y="550" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="whisper" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center" value="Whisper Transcribe&lt;br&gt;audio → text" vertex="1">
+          <mxGeometry x="265" y="660" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center;fontSize=11" value="Upload only:&lt;br&gt;Audio features + Groq report" vertex="1">
+          <mxGeometry x="265" y="730" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ask" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center" value="ask_question()&lt;br&gt;user text + optional report" vertex="1">
+          <mxGeometry x="265" y="800" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Guardrails -->
+        <mxCell id="guard" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;align=center" value="Guardrails&lt;br&gt;crisis · harmful · off-topic?" vertex="1">
+          <mxGeometry x="275" y="875" width="170" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- BLOCK -->
+        <mxCell id="block" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;align=center" value="BLOCK&lt;br&gt;Canned refusal&lt;br&gt;(no therapy LLM)" vertex="1">
+          <mxGeometry x="520" y="885" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ALLOW chain -->
+        <mxCell id="memory" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=12;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;align=center;fontSize=11" value="Redis&lt;br&gt;turns + summary" vertex="1">
+          <mxGeometry x="80" y="990" width="120" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="rag" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=12;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;align=center;fontSize=11" value="Chroma RAG&lt;br&gt;top 3 chunks" vertex="1">
+          <mxGeometry x="520" y="990" width="120" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="prompt" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center" value="Build Prompt&lt;br&gt;RAG + memory + history" vertex="1">
+          <mxGeometry x="255" y="1080" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="llm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center" value="Groq LLM&lt;br&gt;therapy reply" vertex="1">
+          <mxGeometry x="275" y="1155" width="170" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Merge -->
+        <mxCell id="save" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;align=center" value="Save turn&lt;br&gt;user + assistant message" vertex="1">
+          <mxGeometry x="265" y="1230" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="json" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;fontSize=11" value="API Response JSON&lt;br&gt;reply · turns[] · guardrail_triggered?" vertex="1">
+          <mxGeometry x="235" y="1305" width="250" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="show" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center" value="React UI&lt;br&gt;Update chat · toast if blocked" vertex="1">
+          <mxGeometry x="255" y="1385" width="210" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tts-d" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#6c8ebf;fontStyle=1;align=center;fontSize=11" value="User plays&lt;br&gt;TTS?" vertex="1">
+          <mxGeometry x="295" y="1460" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tts" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#6c8ebf;fontStyle=1;align=center;fontSize=11" value="POST /tts&lt;br&gt;Edge → MP3" vertex="1">
+          <mxGeometry x="520" y="1470" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="END&lt;br&gt;User reads / hears response" vertex="1">
+          <mxGeometry x="270" y="1560" width="180" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="leg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;fontSize=10" value="&lt;b&gt;Demo script&lt;/b&gt;&lt;br&gt;1. User sends message (any of 3 ways)&lt;br&gt;2. API runs pipeline&lt;br&gt;3. Guardrails check&lt;br&gt;4a. Block → short refusal → UI&lt;br&gt;4b. Allow → RAG + Groq → UI&lt;br&gt;5. Optional: Play → TTS audio&lt;br&gt;&lt;br&gt;PNG: Sensia-Workflow.png" vertex="1">
+          <mxGeometry x="40" y="80" width="170" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- EDGES -->
+        <mxCell id="e1" edge="1" parent="1" source="start" target="input-d" style="endArrow=classic;html=1;strokeWidth=2" />
+        <mxCell id="e2" edge="1" parent="1" source="input-d" target="ui" style="endArrow=classic;html=1" />
+        <mxCell id="e3" edge="1" parent="1" source="ui" target="proxy" style="endArrow=classic;html=1" />
+        <mxCell id="e4" edge="1" parent="1" source="proxy" target="api" style="endArrow=classic;html=1" />
+        <mxCell id="e5" edge="1" parent="1" source="api" target="pre-d" style="endArrow=classic;html=1" />
+        <mxCell id="e5y" edge="1" parent="1" source="pre-d" target="whisper" style="endArrow=classic;html=1" value="Yes" />
+        <mxCell id="e5n" edge="1" parent="1" source="pre-d" target="ask" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366" value="No (text)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="590" />
+              <mxPoint x="180" y="825" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="whisper" target="voice" style="endArrow=classic;html=1" />
+        <mxCell id="e6b" edge="1" parent="1" source="whisper" target="ask" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="685" />
+              <mxPoint x="480" y="825" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl-mic" parent="1" style="text;html=1;fontSize=9;fontColor=#666666" value="mic: skip voice report" vertex="1">
+          <mxGeometry x="485" y="700" width="110" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="voice" target="ask" style="endArrow=classic;html=1" />
+        <mxCell id="e8" edge="1" parent="1" source="ask" target="guard" style="endArrow=classic;html=1;strokeWidth=2" />
+        <mxCell id="e9b" edge="1" parent="1" source="guard" target="block" style="endArrow=classic;html=1;strokeColor=#b85450;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5" />
+        <mxCell id="e9a" edge="1" parent="1" source="guard" target="prompt" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;exitX=0.5;exitY=1" />
+        <mxCell id="e-mem" edge="1" parent="1" source="memory" target="prompt" style="endArrow=classic;html=1;startArrow=classic;endFill=1;startFill=1" />
+        <mxCell id="e-rag" edge="1" parent="1" source="rag" target="prompt" style="endArrow=classic;html=1;startArrow=classic;endFill=1;startFill=1" />
+        <mxCell id="e10" edge="1" parent="1" source="prompt" target="llm" style="endArrow=classic;html=1" />
+        <mxCell id="e11" edge="1" parent="1" source="llm" target="save" style="endArrow=classic;html=1" />
+        <mxCell id="e11b" edge="1" parent="1" source="block" target="save" style="endArrow=classic;html=1;strokeColor=#b85450;dashed=1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="595" y="1255" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="save" target="json" style="endArrow=classic;html=1;strokeWidth=2" />
+        <mxCell id="e13" edge="1" parent="1" source="json" target="show" style="endArrow=classic;html=1;strokeWidth=2" />
+        <mxCell id="e14" edge="1" parent="1" source="show" target="tts-d" style="endArrow=classic;html=1" />
+        <mxCell id="e15y" edge="1" parent="1" source="tts-d" target="tts" style="endArrow=classic;html=1;exitX=1;exitY=0.5;value=Yes" />
+        <mxCell id="e15n" edge="1" parent="1" source="tts-d" target="end" style="endArrow=classic;html=1;value=No" />
+        <mxCell id="e16" edge="1" parent="1" source="tts" target="end" style="endArrow=classic;html=1;dashed=1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="1588" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-back" edge="1" parent="1" source="json" target="ui" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;exitX=0;exitY=0.5;entryX=0;entryY=0.5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="15" y="1332" />
+              <mxPoint x="15" y="387" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

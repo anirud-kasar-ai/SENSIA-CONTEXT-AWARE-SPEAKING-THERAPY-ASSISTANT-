@@ -1,0 +1,98 @@
+%% Sensia POC — High Level Design (from architecture.md)
+flowchart TB
+  subgraph title[" "]
+    T["Sensia POC — High Level Design"]
+  end
+
+  subgraph ctx["1. System Context"]
+    User((End User))
+    subgraph Sensia["Sensia POC System"]
+      UI["React SPA<br/>sensia_ui-main · :5173"]
+      API["FastAPI<br/>api_server.py · :8000"]
+      UI -->|"/api proxy"| API
+    end
+    Groq["Groq API<br/>LLM + reports"]
+    Redis[("Redis<br/>sessions")]
+    Chroma[("Chroma<br/>New_DB/")]
+    Whisper["faster-whisper<br/>local STT"]
+    Edge["Edge TTS"]
+    Policy["guardrails_policy.json"]
+    User --> UI
+    API -.-> Groq
+    API -.-> Redis
+    API -.-> Chroma
+    API -.-> Whisper
+    API -.-> Edge
+    API -.-> Policy
+  end
+
+  subgraph containers["2. Logical Containers"]
+    direction LR
+    subgraph pres["Presentation"]
+      RUI["React UI<br/>Chat · Mic · Upload · TTS<br/>localStorage · guardrail toasts"]
+      Proxy["Vite proxy /api → :8000"]
+      RUI --- Proxy
+    end
+    subgraph gateway["API Gateway"]
+      FAPI["api_server.py<br/>REST · CORS · multipart"]
+      Boot["sensia_bootstrap.py"]
+    end
+    subgraph domain["Domain"]
+      Core["therapist_core.py<br/>ask_question · RAG · summaries"]
+      Guard["sensia_guardrails.py"]
+      Audio["Audio_Analysis.py"]
+      Embed["embeddings_config.py"]
+      Chat["chat_config.py"]
+    end
+    subgraph data["Data"]
+      Store["conversation_store.py"]
+      VDB[("New_DB/ Chroma")]
+      Log["conversation_log.txt"]
+      Pol2["guardrails_policy.json"]
+    end
+    RUI ==>|HTTP| FAPI
+    FAPI ==>|calls| Core
+    Core --> Guard
+    Core --> Store
+    Core --> Audio
+    Core --> Embed
+    Core --> Chat
+    Guard --> Pol2
+    Embed --> VDB
+    Core --> VDB
+    Store --> Redis
+  end
+
+  subgraph deploy["3. Developer Deployment"]
+    T1["run_backend.ps1<br/>uvicorn :8000"]
+    T2["run_ui.ps1<br/>Vite :5173"]
+    Venv["Python venv"]
+    Node["Node.js"]
+    Browser["Browser"]
+    T1 --- Venv
+    T2 --- Node
+    Browser --> T2
+    T2 --> T1
+  end
+
+  subgraph caps["4. POC Capabilities"]
+    C1["Multi-modal input"]
+    C2["RAG therapy replies"]
+    C3["Session memory"]
+    C4["Voice analysis"]
+    C5["Edge TTS"]
+    C6["Input guardrails"]
+    C7["Out of scope: auth · K8s"]
+  end
+
+  style User fill:#dae8fc,stroke:#6c8ebf
+  style UI fill:#dae8fc,stroke:#6c8ebf
+  style API fill:#e1d5e7,stroke:#9673a6
+  style Groq fill:#f8cecc,stroke:#b85450
+  style Redis fill:#e1d5e7,stroke:#9673a6
+  style Chroma fill:#f8cecc,stroke:#b85450
+  style Whisper fill:#d5e8d4,stroke:#82b366
+  style Edge fill:#e1f5fe,stroke:#6c8ebf
+  style Policy fill:#f8cecc,stroke:#b85450
+  style Core fill:#fff2cc,stroke:#d6b656
+  style Guard fill:#f8cecc,stroke:#b85450

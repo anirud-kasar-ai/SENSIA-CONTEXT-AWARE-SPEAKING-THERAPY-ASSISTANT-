@@ -1,0 +1,55 @@
+%% Sensia POC — High-level workflow (input → response)
+flowchart TB
+  Start([User starts session])
+  Input{How does user send input?}
+
+  Start --> Input
+
+  Input -->|Type text| T1[React UI: sendChat]
+  Input -->|Record mic| T2[React UI: sendMicAudio]
+  Input -->|Upload file| T3[React UI: analyzeAudioFile]
+
+  T1 --> API1[POST /chat]
+  T2 --> API2[POST /mic]
+  T3 --> API3[POST /audio/analyze]
+
+  API1 --> Ask
+  API2 --> Whisper[Whisper: speech → text]
+  API3 --> Whisper
+  API3 --> Voice[librosa + Groq voice report]
+
+  Whisper --> Ask[ask_question]
+  Voice --> Ask
+
+  Ask --> Guard{Input guardrails?}
+
+  Guard -->|Block: off-topic / crisis / harmful| Refuse[Canned reply — no therapy LLM]
+  Guard -->|Allow: in scope| Memory[Load Redis turns + session summary]
+  Memory --> RAG[Chroma RAG: top 3 chunks]
+  RAG --> Prompt[Build prompt + scope rules]
+  Prompt --> LLM[Groq: generate therapy reply]
+
+  Refuse --> Save[Save turn to Redis / memory]
+  LLM --> Save
+
+  Save --> JSON[API JSON response]
+  JSON --> UI[React UI: show message in chat]
+  UI --> Toast{guardrail_triggered?}
+  Toast -->|Yes| Notify[Toast: crisis or blocked]
+  Toast -->|No| Done
+  Notify --> Done
+
+  UI --> TTSopt{User clicks Play TTS?}
+  TTSopt -->|Yes| TTS[POST /tts → Edge MP3]
+  TTSopt -->|No| End([Done])
+  TTS --> Hear[User hears audio]
+  Hear --> End
+  Done --> TTSopt
+
+  style Start fill:#dae8fc,stroke:#6c8ebf
+  style Input fill:#ffe6cc,stroke:#d79b00
+  style Guard fill:#f8cecc,stroke:#b85450
+  style Refuse fill:#f8cecc,stroke:#b85450
+  style LLM fill:#fff2cc,stroke:#d6b656
+  style JSON fill:#dae8fc,stroke:#6c8ebf
+  style End fill:#d5e8d4,stroke:#82b366

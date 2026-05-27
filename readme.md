@@ -131,13 +131,15 @@ Chat/mic/analyze responses include optional `guardrail_triggered` and `guardrail
 .\venv\Scripts\python.exe -m pytest tests/test_guardrails.py -q
 ```
 
-## Architecture diagrams
+## Architecture
 
-Open in [diagrams.net](https://app.diagrams.net) or the Draw.io extension:
-
-- [`Sensia-HLD.drawio`](Sensia-HLD.drawio) — system context & containers
-- [`Sensia-LLD.drawio`](Sensia-LLD.drawio) — modules, API, sequences
-- [`Sensa flow diagam.drawio`](Sensa%20flow%20diagam.drawio) — end-to-end pipeline (including guardrails)
+- **[`Doc/architecture.md`](Doc/architecture.md)** — full system architecture (modules, flows, API, data, security, file review)
+- [`Doc/Sensia-Workflow.png`](Doc/Sensia-Workflow.png) — **workflow** from user input → API → guardrails → response (demo-friendly)
+- [`Doc/Sensia-HLD.png`](Doc/Sensia-HLD.png) — HLD diagram image (from `architecture.md`)
+- Diagrams (Draw.io / [diagrams.net](https://app.diagrams.net)):
+  - [`Doc/Sensia-HLD.drawio`](Doc/Sensia-HLD.drawio) — editable HLD source
+  - [`Doc/Sensia-LLD.drawio`](Doc/Sensia-LLD.drawio) — modules, API, sequences
+  - [`Doc/Sensa flow diagam.drawio`](Doc/Sensa%20flow%20diagam.drawio) — vertical demo pipeline
 
 Input is evaluated in `sensia_guardrails.evaluate_user_message()` before RAG/LLM inside `therapist_core.ask_question()`.
 

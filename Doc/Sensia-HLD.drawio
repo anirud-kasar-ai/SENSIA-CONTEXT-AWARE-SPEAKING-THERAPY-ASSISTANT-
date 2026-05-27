@@ -7,7 +7,7 @@
         <mxCell id="hld-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=20;fontStyle=1;align=center;" value="Sensia POC — High Level Design (HLD)" vertex="1">
           <mxGeometry height="35" width="500" x="400" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="hld-sub" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;align=center;fontColor=#666666;" value="Context-aware voice therapy assistant · React + FastAPI · May 2026" vertex="1">
+        <mxCell id="hld-sub" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=11;align=center;fontColor=#666666;" value="From architecture.md · React :5173 + FastAPI :8000 · Guardrails · RAG · Redis" vertex="1">
           <mxGeometry height="22" width="540" x="380" y="52" as="geometry" />
         </mxCell>
         <mxCell id="ctx-box" parent="1" style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="1. System Context" vertex="1">
@@ -64,7 +64,7 @@
         <mxCell id="lane-pres" parent="ctr-box" style="swimlane;startSize=22;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Presentation" vertex="1">
           <mxGeometry height="260" width="300" x="20" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="ctr-ui" parent="lane-pres" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontStyle=1;align=center;" value="React SPA&lt;br&gt;sensia_ui-main&lt;br&gt;TanStack Router · Vite :8080&lt;br&gt;&lt;br&gt;Chat UI · Mic · Upload · TTS player&lt;br&gt;notifyGuardrail() toasts (crisis / block)&lt;br&gt;localStorage (session meta)" vertex="1">
+        <mxCell id="ctr-ui" parent="lane-pres" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontStyle=1;align=center;" value="React SPA&lt;br&gt;sensia_ui-main&lt;br&gt;TanStack Start · Vite :5173&lt;br&gt;&lt;br&gt;Chat UI · Mic · Upload · TTS player&lt;br&gt;notifyGuardrail() toasts (crisis / block)&lt;br&gt;localStorage (session meta)" vertex="1">
           <mxGeometry height="120" width="250" x="25" y="45" as="geometry" />
         </mxCell>
         <mxCell id="ctr-proxy" parent="lane-pres" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;align=center;fontSize=10;" value="Dev proxy: /api → :8000" vertex="1">
@@ -97,21 +97,25 @@
         <mxCell id="lane-data" parent="ctr-box" style="swimlane;startSize=22;fillColor=#f5f5f5;strokeColor=#666666;" value="Data" vertex="1">
           <mxGeometry height="280" width="300" x="980" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="4U1sszHdFSOS6uAWXSNp-2" edge="1" parent="lane-data" source="ctr-store" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="110" y="140" as="targetPoint" />
-          </mxGeometry>
+        <mxCell id="ctr-chatcfg" parent="lane-domain" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;fontSize=10;" value="chat_config.py&lt;br&gt;Groq LLM" vertex="1">
+          <mxGeometry height="40" width="100" x="20" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="ec-core-chatcfg" edge="1" parent="ctr-box" source="ctr-core" style="endArrow=classic;html=1;dashed=1;" target="ctr-chatcfg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec-core-chroma" edge="1" parent="ctr-box" source="ctr-embed" style="endArrow=classic;html=1;dashed=1;" target="ctr-chroma-disk">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ctr-store" parent="lane-data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=center;" value="conversation_store.py&lt;br&gt;&lt;br&gt;Turns list (Redis LPUSH / memory)&lt;br&gt;Summary JSON {text, cursor}&lt;br&gt;Fallback if Redis unreachable" vertex="1">
           <mxGeometry height="90" width="250" x="25" y="45" as="geometry" />
         </mxCell>
-        <mxCell id="ctr-chroma-disk" parent="lane-data" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=12;fillColor=#f8cecc;strokeColor=#b85450;align=center;fontSize=11;" value="chroma_db/&lt;br&gt;therapy vectors" vertex="1">
+        <mxCell id="ctr-chroma-disk" parent="lane-data" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=12;fillColor=#f8cecc;strokeColor=#b85450;align=center;fontSize=11;" value="New_DB/&lt;br&gt;Chroma RAG vectors" vertex="1">
           <mxGeometry height="65" width="100" x="40" y="145" as="geometry" />
         </mxCell>
         <mxCell id="ctr-policy" parent="lane-data" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;fontSize=10;" value="guardrails_policy.json&lt;br&gt;patterns · canned replies" vertex="1">
           <mxGeometry height="50" width="120" x="20" y="220" as="geometry" />
         </mxCell>
-        <mxCell id="ctr-log" parent="lane-data" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#f5f5f5;align=center;fontSize=10;" value="therapist_log.txt&lt;br&gt;(optional)" vertex="1">
+        <mxCell id="ctr-log" parent="lane-data" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#f5f5f5;align=center;fontSize=10;" value="conversation_log.txt&lt;br&gt;(optional)" vertex="1">
           <mxGeometry height="50" width="110" x="160" y="160" as="geometry" />
         </mxCell>
         <mxCell id="ec-ui-api" edge="1" parent="ctr-box" source="ctr-ui" style="endArrow=classic;html=1;strokeWidth=2;" target="ctr-api">
@@ -144,7 +148,7 @@
         <mxCell id="dep-t1" parent="dep-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;align=center;" value="Terminal 1&lt;br&gt;run_backend.ps1&lt;br&gt;uvicorn :8000" vertex="1">
           <mxGeometry height="70" width="150" x="60" y="85" as="geometry" />
         </mxCell>
-        <mxCell id="dep-t2" parent="dep-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;align=center;" value="Terminal 2&lt;br&gt;run_ui.ps1&lt;br&gt;Vite :8080" vertex="1">
+        <mxCell id="dep-t2" parent="dep-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;align=center;" value="Terminal 2&lt;br&gt;run_ui.ps1&lt;br&gt;Vite :5173" vertex="1">
           <mxGeometry height="70" width="150" x="240" y="85" as="geometry" />
         </mxCell>
         <mxCell id="dep-venv" parent="dep-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;align=center;fontSize=11;" value="Python venv&lt;br&gt;FastAPI · LangChain · Chroma · Whisper" vertex="1">
@@ -159,7 +163,7 @@
         <mxCell id="dep-groq-ext" parent="dep-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;align=center;fontSize=11;" value="Groq cloud" vertex="1">
           <mxGeometry height="45" width="100" x="970" y="95" as="geometry" />
         </mxCell>
-        <mxCell id="dep-browser" parent="dep-box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5fe;align=center;" value="Browser&lt;br&gt;localhost:8080" vertex="1">
+        <mxCell id="dep-browser" parent="dep-box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5fe;align=center;" value="Browser&lt;br&gt;localhost:5173" vertex="1">
           <mxGeometry height="70" width="120" x="1100" y="85" as="geometry" />
         </mxCell>
         <mxCell id="cap-box" parent="1" style="swimlane;startSize=28;fillColor=#ffffff;strokeColor=#333333;fontStyle=1;" value="4. POC Capabilities" vertex="1">
@@ -185,6 +189,30 @@
         </mxCell>
         <mxCell id="cap7" parent="cap-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;dashed=1;align=center;fontSize=11;" value="Out of scope POC&lt;br&gt;auth · multi-tenant · prod K8s" vertex="1">
           <mxGeometry height="55" width="150" x="1050" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cap-ref" parent="cap-box" style="text;html=1;strokeColor=none;fillColor=none;align=right;fontSize=10;fontColor=#666666;" value="PNG: Sensia-HLD.png · Source: architecture.md" vertex="1">
+          <mxGeometry height="25" width="220" x="1080" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-box" parent="1" style="swimlane;startSize=28;fillColor=#ffffff;strokeColor=#333333;fontStyle=1;" value="Layers (architecture.md §4)" vertex="1">
+          <mxGeometry height="90" width="1320" x="40" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="lay1" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;align=center;fontSize=10;" value="Presentation&lt;br&gt;sensia_ui-main" vertex="1">
+          <mxGeometry height="45" width="150" x="30" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="lay2" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;align=center;fontSize=10;" value="API&lt;br&gt;api_server.py" vertex="1">
+          <mxGeometry height="45" width="130" x="200" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="lay3" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;align=center;fontSize=10;" value="Domain&lt;br&gt;core · guardrails · audio" vertex="1">
+          <mxGeometry height="45" width="160" x="350" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="lay4" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;align=center;fontSize=10;" value="Persistence&lt;br&gt;Redis · Chroma · log" vertex="1">
+          <mxGeometry height="45" width="150" x="530" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="lay5" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;align=center;fontSize=10;" value="Integration&lt;br&gt;Groq · Whisper · Edge" vertex="1">
+          <mxGeometry height="45" width="150" x="700" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="lay6" parent="layer-box" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;align=center;fontSize=10;" value="Bootstrap&lt;br&gt;sensia_bootstrap.py" vertex="1">
+          <mxGeometry height="45" width="140" x="870" y="38" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

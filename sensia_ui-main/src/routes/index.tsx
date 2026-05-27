@@ -85,6 +85,7 @@ function TherapistApp() {
   const ttsAudioRef = useRef<HTMLAudioElement>(null);
   const ttsGenerationRef = useRef(0);
   const ttsLoadingRef = useRef(false);
+  const ttsAutoplayRef = useRef(false);
 
   const active = useMemo(() => sessions.find((s) => s.id === activeId) ?? sessions[0], [sessions, activeId]);
   const messages = active?.messages ?? [];
@@ -180,7 +181,10 @@ function TherapistApp() {
       notifyGuardrail(res);
       const messages = turnsToMessages(res.turns);
       updateActive((s) => ({ ...s, messages, updatedAt: Date.now() }));
-      if (res.turns.length) setLastReply(res.turns[res.turns.length - 1].bot);
+      if (res.turns.length) {
+        ttsAutoplayRef.current = true;
+        setLastReply(res.turns[res.turns.length - 1].bot);
+      }
     } catch (e) {
       toast.error(String(e));
       setInput(text);
@@ -264,7 +268,10 @@ function TherapistApp() {
             notifyGuardrail(res);
             const messages = turnsToMessages(res.turns);
             updateActive((s) => ({ ...s, messages, updatedAt: Date.now() }));
-            if (res.reply) setLastReply(res.reply);
+            if (res.reply) {
+              ttsAutoplayRef.current = true;
+              setLastReply(res.reply);
+            }
           }
         } catch (e) {
           toast.error(String(e));
@@ -299,7 +306,10 @@ function TherapistApp() {
         notifyGuardrail(res);
         const messages = turnsToMessages(res.turns);
         updateActive((s) => ({ ...s, messages, updatedAt: Date.now() }));
-        if (res.reply) setLastReply(res.reply);
+        if (res.reply) {
+          ttsAutoplayRef.current = true;
+          setLastReply(res.reply);
+        }
         toast.success(`Audio analyzed${res.elapsed_seconds ? ` in ${res.elapsed_seconds}s` : ""}`);
       }
     } catch (e) {
@@ -329,22 +339,77 @@ function TherapistApp() {
     setTtsLoading(false);
   }, []);
 
+  const playReplyAloud = useCallback(
+    async (sessionId: string, text: string) => {
+      const reply = text.trim();
+      if (!reply || ttsLoadingRef.current) return;
+
+      const audio = ttsAudioRef.current;
+      if (!audio) return;
+
+      const generation = ++ttsGenerationRef.current;
+      ttsLoadingRef.current = true;
+      setTtsLoading(true);
+      setPlaying(false);
+      audio.pause();
+      revokeTtsUrl();
+
+      try {
+        const url = await fetchTtsUrl(sessionId, reply);
+        if (generation !== ttsGenerationRef.current) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        setTtsUrl(url);
+        audio.src = url;
+        audio.load();
+        await audio.play();
+        if (generation !== ttsGenerationRef.current) {
+          audio.pause();
+          return;
+        }
+        setPlaying(true);
+      } catch (e) {
+        if (generation === ttsGenerationRef.current) {
+          toast.error(String(e));
+          setPlaying(false);
+        }
+      } finally {
+        if (generation === ttsGenerationRef.current) {
+          ttsLoadingRef.current = false;
+          setTtsLoading(false);
+        }
+      }
+    },
+    [revokeTtsUrl],
+  );
+
   useEffect(() => {
     stopTts();
     revokeTtsUrl();
-  }, [lastReply, activeId, stopTts, revokeTtsUrl]);
+    ttsAutoplayRef.current = false;
+  }, [activeId, stopTts, revokeTtsUrl]);
+
+  useEffect(() => {
+    if (!ttsAutoplayRef.current || !lastReply.trim() || !activeId) return;
+    ttsAutoplayRef.current = false;
+    void playReplyAloud(activeId, lastReply);
+  }, [lastReply, activeId, playReplyAloud]);
 
   useEffect(() => {
     const audio = ttsAudioRef.current;
     if (!audio) return;
     const onEnded = () => setPlaying(false);
+    const onPlay = () => setPlaying(true);
     const onPause = () => {
       if (!audio.ended) setPlaying(false);
     };
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
     return () => {
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
     };
   }, []);
@@ -385,36 +450,7 @@ function TherapistApp() {
       return;
     }
 
-    const generation = ++ttsGenerationRef.current;
-    ttsLoadingRef.current = true;
-    setTtsLoading(true);
-    try {
-      revokeTtsUrl();
-      const url = await fetchTtsUrl(active.id, lastReply);
-      if (generation !== ttsGenerationRef.current) {
-        URL.revokeObjectURL(url);
-        return;
-      }
-      setTtsUrl(url);
-      audio.src = url;
-      audio.load();
-      await audio.play();
-      if (generation !== ttsGenerationRef.current) {
-        audio.pause();
-        return;
-      }
-      setPlaying(true);
-    } catch (e) {
-      if (generation === ttsGenerationRef.current) {
-        toast.error(String(e));
-        setPlaying(false);
-      }
-    } finally {
-      if (generation === ttsGenerationRef.current) {
-        ttsLoadingRef.current = false;
-        setTtsLoading(false);
-      }
-    }
+    await playReplyAloud(active.id, lastReply);
   };
 
   const commitHeaderRename = () => {
@@ -680,7 +716,7 @@ function TherapistApp() {
 
               {/* TTS reply */}
               <Card>
-                <CardHeader icon={<Volume2 className="h-4 w-4" />} title="AI response" subtitle="Read reply aloud" />
+                <CardHeader icon={<Volume2 className="h-4 w-4" />} title="AI response" subtitle="Auto-plays each reply · tap to pause" />
                 <p className="mt-3 text-sm leading-relaxed text-foreground/90">
                   {lastReply ? `"${lastReply.slice(0, 280)}${lastReply.length > 280 ? "…" : ""}"` : "Send a message to hear the therapist reply."}
                 </p>
